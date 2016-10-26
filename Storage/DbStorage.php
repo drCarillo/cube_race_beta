@@ -191,7 +191,7 @@ class DbStorage
 	* @param integer $player_id
 	*
 	* @return string $player_id on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getPlayer($player_id)
 	{
@@ -223,7 +223,7 @@ class DbStorage
 	* @param integer $cube_id
 	*
 	* @return array $player_ids on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getSayPlayerIds($game_id, $cube_id)
 	{
@@ -254,7 +254,7 @@ class DbStorage
 	* @param integer $game_id
 	*
 	* @return array $player_ids on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getYellPlayerIds($game_id)
 	{
@@ -287,7 +287,7 @@ class DbStorage
 	* @param integer $active
 	*
 	* @return array $monster_ids on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getCubeMonsterIds($cube_id, $active)
 	{
@@ -320,7 +320,7 @@ class DbStorage
 	* @param integer $active
 	*
 	* @return array $attribute_ids on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getCubeAttributeIds($cube_id, $active)
 	{
@@ -353,7 +353,7 @@ class DbStorage
 	* @param integer $active
 	*
 	* @return array $monster on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getMonster($monster_id, $active)
 	{
@@ -386,7 +386,7 @@ class DbStorage
 	* @param integer $active
 	*
 	* @return array $attribute on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getAttribute($attribute_id, $active)
 	{
@@ -419,7 +419,7 @@ class DbStorage
 	* @param integer $game_move_messages_id
 	*
 	* @return array $messages on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getGameMoveMessages($game_move_messages_id)
 	{
@@ -457,7 +457,7 @@ class DbStorage
 	* @param integer $cube_id
 	*
 	* @return array $cube on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getCube($cube_id)
 	{
@@ -488,7 +488,7 @@ class DbStorage
 	* @param integer $game_id
 	*
 	* @return integer $active on success
-	@ return boolean false on error
+	* @ return boolean false on error
 	*/
 	public function getGameStatus($game_id)
 	{

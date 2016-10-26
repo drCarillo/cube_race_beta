@@ -83,10 +83,6 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	    $this->start_cube = $this->getCube($start_cube);
 	}
 	
-	public function getCommand() {
-	    return 'made it here again...';
-	}
-	
 	/**
 	* Player chose to move north.
 	* Check if the current cube (room) is solid or transparent:
@@ -110,7 +106,7 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	    $current_direction_id   = strtolower($direction) . '_id';      // for north, south, east, west, up, down
 	    $current_direction_room = strtolower($direction) . '_room';    // move into a room/cube
 	    $current_direction_wall = strtolower($direction) . '_wall';    // you can't move through the wall
-	    //var_dump($this->game_status); exit;
+	    
 	    if (($current_cube && !empty($current_cube[$current_direction_id]) && $current_cube['solid'] != 1) || $current_cube['entrance'] == $direction) {
 	        $this->storage->updatePlayerMove($player_id, $current_cube[$current_direction_id], $direction, 1, 1); // you're moving
 	        $this->cube            = $this->getCube($current_cube[$current_direction_id]);                        // cube/room id then you can move in
