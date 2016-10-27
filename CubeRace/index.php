@@ -20,9 +20,6 @@ try {
 	echo json_encode(array('message' => '<br />Something went wrong.<br />Contact administrator.'));
 }
 
-$_POST['command'] = 'down';
-$_POST['cube_id'] = 1;
-
 // Process POST data and return message
 try {
     $command  = $_POST['command'];
@@ -39,7 +36,6 @@ try {
     $command_arr[0] = trim($command_arr[0]);
     $command_arr[0] = strtolower($command_arr[0]);                                       // no other cleaning or validation at this time
                                                                                          // otherwise, need regex or other for XSS attacks
-    
     if (!in_array($command_arr[0], $commands)) throw new Exception('Invalid command sent.');
     
     // temporary: need a factory command to build commands for model
