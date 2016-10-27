@@ -84,9 +84,23 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	}
 	
 	/**
-	* Player chose to move north.
+	* Like a factory: take from client to controller to here.
+	*
+	* @param 
+	*
+	* @return string $message
+	*/
+	public function processCommand($command, $value, $value2 = false, $value3 = false, $value4 = false)
+	{
+	    // TODO
+	    return false;
+	}
+	
+	/**
+	* Player chose to move.
 	* Check if the current cube (room) is solid or transparent:
 	* if transparent wall allows passage (adjoining cube/room attached).
+	* Solid rooms may levave at entrance to previous cube.
 	* 
 	* If move to new cube then get all players, cube attributes, cube monsters
 	* etc. that are in the cube.
@@ -100,8 +114,9 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	public function move($direction, $game_id, $cube_id, $player_id) {
 	    $message           = null;
 	    $this->game_status = $this->storage->getGameStatus($game_id);
-	    if ($this->game_status === 0) return $message = $this->gameIsOver();  // game not restarted yet
+	    if ($this->game_status === 0) return $message = array('message' => $this->gameIsOver(), 'cube_id' => $cube_id);  // game not restarted yet
 	    
+	    $return_cube_id         = null;
 	    $current_cube           = $this->getCube($cube_id);
 	    $current_direction_id   = strtolower($direction) . '_id';      // for north, south, east, west, up, down
 	    $current_direction_room = strtolower($direction) . '_room';    // move into a room/cube
@@ -109,6 +124,7 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	    
 	    if (($current_cube && !empty($current_cube[$current_direction_id]) && $current_cube['solid'] != 1) || $current_cube['entrance'] == $direction) {
 	        $this->storage->updatePlayerMove($player_id, $current_cube[$current_direction_id], $direction, 1, 1); // you're moving
+	        $return_cube_id        = $current_cube[$current_direction_id];                                        // cube_id you moved into
 	        $this->cube            = $this->getCube($current_cube[$current_direction_id]);                        // cube/room id then you can move in
 	        $this->cube_players    = $this->getSayPlayers($game_id, $current_cube[$current_direction_id]);        // get all players in the room/cube
 	        $this->cube_attributes = $this->getCubeAttributes($current_cube[$current_direction_id], 1);
@@ -129,7 +145,63 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	        $message = '<br />' . $this->game_move_messages[$current_direction_wall] . '<br />'; // can't move through this wall vs room: not transparent
 	    }
 	    
-	    return $message;
+	    return array('message' => $message, 'cube_id' => $return_cube_id);
+	}
+	
+	/**
+	* Message sent to individual player.
+	*
+	* I have the db method to get the the players push_ip (websocket or other)
+	* but none of the persistent connect requirements are built for this exercise
+	* so just returning a string for the current room/cube.
+	* test_player is the only allowed 'active' player.
+	*
+	* @param string $message
+	* @param string $screen_name
+	* @param integer $cube_id
+	*
+	* @return string $message
+	*/
+	public function tellMessage($message, $screen_name, $cube_id)
+	{
+	    $response = null;
+	    $players = $this->getSayPlayers(1, $cube_id); // not useful without websockets or other persistent connection
+	    
+	    return $response = '<br />test_player says: ' . $message . ' to ' . $screen_name . '.';
+	}
+	
+	/**
+	* Message sent to whole cube/room.
+	*
+	* @param string $message
+	* @param string $screen_name
+	* @param integer $cube_id
+	*
+	* @return string $message
+	*/
+	public function sayMessage($message, $screen_name, $cube_id)
+	{
+	    $response = null;
+	    $players = $this->getSayPlayers(1, $cube_id); // not using currently
+	    
+	    return $response = '<br />test_player says: ' . $message . ' to the whole room.' . '.';
+	}
+	
+	/**
+	* Message sent to all cubes/rooms (world).
+	*
+	* @param string $message
+	* @param string $screen_name
+	* @param integer $cube_id
+	*
+	* @return string $message
+	*/
+	public function yellMessage($message, $screen_name, $cube_id)
+	{
+	    $response = null;
+	    $players = $this->getYellPlayers(1); // not using currently
+	    
+	    return $response = '<br />test_player says: ' . $message . ' to the whole world!' . '.';
 	}
     
     // getters

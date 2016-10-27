@@ -513,6 +513,39 @@ class DbStorage
 	    return false;
 	}
 	
+	/**
+	* Get all commands.
+	* If we had more than one game in process or
+	* using levels, or had multiple worlds we'd use
+	* getCubeCommands($game_id) instead.
+	*
+	*
+	* @return array $commands on success
+	* @ return boolean false on error
+	*/
+	public function getAllCommands()
+	{
+	    try {
+	        $row      = null;
+	        $commands = array();
+		    // prepare
+		    $sql 	= "SELECT * FROM commands";
+		    $query  = $this->pdo->prepare($sql);
+		    $query->execute();
+		    $row    = $query->fetchAll();
+		    
+		    if ($query) return $commands= $this->processCommands($row);
+	    } catch (Exception $e) {
+	        $pdo_error_code = ($this->pdo) ? $this->pdo->errorCode() : 'no pdo available';
+		    $message        = ($this->pdo) ? implode(' ', $this->pdo->errorInfo()) : $e->getMessage();
+			// something went wrong : db error
+			error_log(json_encode(array('error_code' => '124', 'pdo_code: ' . $pdo_error_code . ' , errmsg: ' . $message)));
+			return false;
+	    }
+	    
+	    return false;
+	}
+	
 	// utilities
 	
 	/**
@@ -714,6 +747,24 @@ class DbStorage
 	        else $cube['active'] = null;
 	    
 	    return $cube;
+	}
+	
+	/**
+	* Build an array from db $row to return.
+	*
+	* @param PDO resource $row
+	*
+	* @return array $commands on success
+	* @return boolean false
+	*/
+	private function processCommands($row)
+	{
+	    $commands = array();
+	    foreach ($row as $command) {
+	       $commands[] = $command['command']; 
+	    }
+	    
+	    return $commands;
 	}
 	
 	/**
