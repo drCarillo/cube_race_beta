@@ -20,7 +20,7 @@ then
 submit 'up'
 
 There are 12 cubes/rooms to this game world.
-I called it CubeRace since 'Dungeon' is used so much: hope yopu don't mind.
+I called it CubeRace since 'Dungeon' is used so much: hope you don't mind.
 Currently there are 3 transparent room with room of cube_id 12 as the winning room
 to end the race/game.
 
