@@ -22,9 +22,9 @@ try {
 
 // Process POST data and return message
 try {
-    $command  = $_POST['command'];
+    $command  = @$_POST['command'];
     if (empty($command)) throw new Exception('Command was empty.');
-    $cube_id  = $_POST['cube_id'];
+    $cube_id  = @$_POST['cube_id'];
     if (empty($cube_id)) throw new Exception('cube_id was empty.');
     
     $commands = $storage->getAllCommands();                                              // just for this exercise
@@ -36,23 +36,26 @@ try {
     $command_arr[0] = trim($command_arr[0]);
     $command_arr[0] = strtolower($command_arr[0]);                                       // no other cleaning or validation at this time
                                                                                          // otherwise, need regex or other for XSS attacks
+    //var_dump($command_arr); exit;
     if (!in_array($command_arr[0], $commands)) throw new Exception('Invalid command sent.');
-    
     // temporary: need a factory command to build commands for model
     if (in_array($command_arr[0], array('say', 'tell', 'yell'))) {
         // shout outs
         switch ($command_arr[0]) {
             case 'tell':
-                $message = $game_commands->tellMessage($command_arr[2], $command_arr[1], $cube_id);
+                $temp_msg = $game_commands->processMessageArray($command_arr, true);
+                $message  = $game_commands->tellMessage($temp_msg, $command_arr[1], $cube_id);
                 break;
             case 'say':
-                $message = $game_commands->sayMessage($command_arr[2], 'test_player', $cube_id);
+                $temp_msg = $game_commands->processMessageArray($command_arr);
+                $message  = $game_commands->sayMessage($temp_msg, 'test_player', $cube_id);
                 break;
             case 'yell':
-                $message = $game_commands->yellMessage($command_arr[2], 'test_player', $cube_id);  // for testing
+                $temp_msg = $game_commands->processMessageArray($command_arr);
+                $message  = $game_commands->yellMessage($temp_msg, 'test_player', $cube_id);  // for testing
                 break;
             default:
-                $message = 'Unble to generate message.';  // shouldn't happen
+                $message  = 'Unble to generate message.';  // shouldn't happen
         }
         echo json_encode(array('message' => $message, 'cube_id' => null));
     } else {
@@ -64,7 +67,3 @@ try {
     error_log(json_encode(array('error_code' => '127', 'error_message: ' => $e->getMessage(), 'FAIL' => true)));
 	echo json_encode(array('message' => '<br />That command does not compute.'));
 }
-
-
-//print_r($game_commands->move('up', 1, 12, 1));
-//echo $game_commands->yellMessage('Hi there!', 'tellPlayer', 1);

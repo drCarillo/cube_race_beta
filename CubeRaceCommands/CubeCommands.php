@@ -167,7 +167,7 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	    $response = null;
 	    $players = $this->getSayPlayers(1, $cube_id); // not useful without websockets or other persistent connection
 	    
-	    return $response = '<br />test_player says: ' . $message . ' to ' . $screen_name . '.';
+	    return $response = '<br />test_player says: ' . $message . ' to ' . $screen_name;
 	}
 	
 	/**
@@ -184,7 +184,7 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	    $response = null;
 	    $players = $this->getSayPlayers(1, $cube_id); // not using currently
 	    
-	    return $response = '<br />test_player says: ' . $message . ' to the whole room.' . '.';
+	    return $response = '<br />test_player says: ' . $message . ' to the whole room.';
 	}
 	
 	/**
@@ -201,7 +201,7 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	    $response = null;
 	    $players = $this->getYellPlayers(1); // not using currently
 	    
-	    return $response = '<br />test_player says: ' . $message . ' to the whole world!' . '.';
+	    return $response = '<br />test_player says: ' . $message . ' to the whole world!';
 	}
     
     // getters
@@ -383,6 +383,29 @@ class CubeRacePlayerCommands implements \CubeRaceCommands\GameCommands
 	    $message = null;
 	    foreach ($this->cube_attributes as $key => $value) {
 	        $message .= '<p>' . $this->cube_attributes[$key]['description'] . '<p>';
+	    }
+	    return $message;
+	}
+	
+	/**
+	* Process the text after the POST command to aggregate say-tell-yell text.
+	*
+	* @param array $message_arr
+	* @param boolean $tell
+	*
+	* @return string $message
+	*/
+	public function processMessageArray($message_arr, $tell = false)
+	{
+	    $message = null;
+	    if (!$tell) {
+	        for ($i = 1; $i < count($message_arr); $i++) {
+	            $message .= $message_arr[$i] . ' ';
+	        }
+	    } else {
+	        for ($i = 2; $i < count($message_arr); $i++) {
+	            $message .= $message_arr[$i] . ' ';
+	        }
 	    }
 	    return $message;
 	}
